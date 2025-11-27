@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping
+@RequestMapping("/stations")
 
 public class RadioStationController {
 
@@ -24,6 +24,7 @@ public class RadioStationController {
 
     @GetMapping
     public List<RadioStation> listAll() {
+
         return repository.findAll();
     }
 }
