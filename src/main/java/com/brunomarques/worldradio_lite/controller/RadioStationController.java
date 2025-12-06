@@ -3,9 +3,7 @@ package com.brunomarques.worldradio_lite.controller;
 
 import com.brunomarques.worldradio_lite.model.RadioStation;
 import com.brunomarques.worldradio_lite.repository.RadioStationRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,7 +22,19 @@ public class RadioStationController {
 
     @GetMapping
     public List<RadioStation> listAll() {
-
         return repository.findAll();
     }
+
+    @GetMapping("/{id}")
+    public RadioStation findById(@PathVariable Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Station not found with id: " + id));
+    }
+
+    @GetMapping("/search")
+    public List<RadioStation> findByCountry(@RequestParam String country) {
+        return repository.findByCountryIgnoreCase(country);
+    }
+
+
 }
