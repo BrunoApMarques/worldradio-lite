@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorldRadio Lite</title>
+
+  <!-- Leaflet CSS (estilo do mapa) -->
+  <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+        html, body { height: 100%; margin: 0; }
+        #map { height: 100vh; width: 100vw; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- Leaflet JS (motor do mapa) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // 1) Cria o mapa
+    const map = L.map('map').setView([20, 0], 2);
+
+    // 2) Base do mapa
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    // 3) Buscar as rádios do backend e colocar no mapa
+    fetch('/stations')
+        .then(response => response.json())
+        .then(stations => {
+            stations.forEach(station => {
+                // cria um marcador na lat/lng
+                const marker = L.marker([station.latitude, station.longitude]).addTo(map);
+
+                // popup ao clicar
+                marker.bindPopup(`
+                    <b>${station.name}</b><br/>
+                    ${station.city} - ${station.country}<br/>
+                    <a href="${station.streamUrl}" target="_blank">Abrir stream</a>
+                `);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar stations:', error);
+        });
+</script>
+
+
+</body>
+</html>
